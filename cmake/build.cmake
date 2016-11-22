@@ -1,0 +1,16 @@
+# This file contains compiler flags for different platforms
+
+if(CMAKE_BUILD_TYPE MATCHES Debug)
+        set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_ROOT}/bin/Dante/debug")
+        set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_ROOT}/bin/Dante/debug")
+        set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_ROOT}/bin/Dante/debug")
+elseif(CMAKE_BUILD_TYPE MATCHES Default)
+    message("default")
+        set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_ROOT}/bin/Dante/default")
+        set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_ROOT}/bin/Dante/default")
+        set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_ROOT}/bin/Dante/default")
+else()
+        set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_ROOT}/bin/Dante/release")
+        set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_ROOT}/bin/Dante/release")
+        set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_ROOT}/bin/Dante/release")
+endif()

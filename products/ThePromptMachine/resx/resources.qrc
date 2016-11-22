@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/cbtek/products/productivity/prompt_machine/images">
+        <file>imgPromptOverlay.png</file>
+        <file>imgMovieFilm.png</file>
+    </qresource>
+</RCC>

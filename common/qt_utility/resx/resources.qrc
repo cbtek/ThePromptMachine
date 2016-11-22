@@ -1,0 +1,24 @@
+<RCC>
+    <qresource prefix="/qt_utility/icons/ui">
+        <file>imgUndo.png</file>
+        <file>imgUnderline.png</file>
+        <file>imgStrikeThrough.png</file>
+        <file>imgRedo.png</file>
+        <file>imgPaste.png</file>
+        <file>imgLink.png</file>
+        <file>imgItalic.png</file>
+        <file>imgIndentMore.png</file>
+        <file>imgIndentLess.png</file>
+        <file>imgCut.png</file>
+        <file>imgCopy.png</file>
+        <file>imgBold.png</file>
+        <file>imgTextUnordered.png</file>
+        <file>imgTextRight.png</file>
+        <file>imgTextOrdered.png</file>
+        <file>imgTextLeft.png</file>
+        <file>imgTextFill.png</file>
+        <file>imgTextCenter.png</file>
+        <file>imgIncreaseFontSize.png</file>
+        <file>imgDecreaseFontSize.png</file>
+    </qresource>
+</RCC>
