@@ -155,7 +155,36 @@ void UIPromptMachineEditor::onTextEnd()
 
 void UIPromptMachineEditor::onTextSpeedChanged(int value)
 {
-    m_ui->m_lblTextSpeed->setText("Text Speed ("+QString::number(value)+"):");
+    QString textString;
+    if (value==0)
+    {
+        textString = "Slowest";
+    }
+    else if (value==1)
+    {
+        textString = "Slower";
+    }
+    else if (value==2)
+    {
+        textString = "Slow";
+    }
+    else if (value==3)
+    {
+        textString ="Normal";
+    }
+    if (value==4)
+    {
+        textString = "Fast";
+    }
+    else if (value==5)
+    {
+        textString = "Faster";
+    }
+    else if (value==6)
+    {
+        textString = "Fastest";
+    }
+    m_ui->m_lblTextSpeed->setText("Text Speed: "+textString);
 }
 
 void UIPromptMachineEditor::onRandomColors()

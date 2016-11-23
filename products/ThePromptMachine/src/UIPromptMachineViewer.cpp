@@ -56,10 +56,11 @@ UIPromptMachineViewer::UIPromptMachineViewer(const PromptSession & session,
     onToggleFullScreen();
     m_countDownSeconds = 0;
     m_textHeight = 0;
-    m_scrollSpeed = m_session.getInitialScrollSpeed();
+    setScrollSpeed(m_session.getInitialScrollSpeed());
     QTimer::singleShot(100,this,SLOT(onInit()));
 
     m_browser->setReadOnly(true);
+    m_overlayTime = 5000;
 }
 
 UIPromptMachineViewer::~UIPromptMachineViewer()
@@ -85,36 +86,38 @@ void UIPromptMachineViewer::resizeEvent(QResizeEvent *)
 
 void UIPromptMachineViewer::keyReleaseEvent(QKeyEvent * e)
 {
+    this->setFocus();
+    this->m_browser->clearFocus();
     if (e->key() == Qt::Key_Escape)
     {
         onToggleFullScreen();
     }
     else if (e->key() == Qt::Key_Up)
     {
-        m_scrollSpeed-=5;
-        if (m_scrollSpeed < 1)
-        {
-            m_scrollSpeed = 1;
-        }
-        m_scrollTimer.start(101-m_scrollSpeed);
+       if (m_session.getInitialScrollSpeed() > 0)
+       {
+           m_session.setInitialScrollSpeed(m_session.getInitialScrollSpeed()-1);
+           setScrollSpeed(m_session.getInitialScrollSpeed());
 
+           m_scrollTimer.start(m_scrollSpeed);
+           this->showScrollSpeed();
+       }
     }
     else if (e->key() == Qt::Key_Down)
     {
-        m_scrollSpeed+=5;
-        if (m_scrollSpeed > 100)
+        if (m_session.getInitialScrollSpeed() < 6)
         {
-            m_scrollSpeed = 100;
+            m_session.setInitialScrollSpeed(m_session.getInitialScrollSpeed()+1);
+            setScrollSpeed(m_session.getInitialScrollSpeed());
+            m_scrollTimer.start(m_scrollSpeed);
+            this->showScrollSpeed();
         }
-        m_scrollTimer.start(101-m_scrollSpeed);
     }
 }
 
 void UIPromptMachineViewer::paintEvent(QPaintEvent *event)
 {
 
-
-    QMainWindow::paintEvent(event);
     QPainter g(this);
     QRect screenArea = QRect(0,0,this->width(),this->height());
     if (m_isCountDownMode)
@@ -122,9 +125,6 @@ void UIPromptMachineViewer::paintEvent(QPaintEvent *event)
         QTextOption option;
 
         option.setAlignment(Qt::AlignCenter);
-
-
-
         QFont font = UIUtils::getAutoFont("000",this->width()-32,256);
         g.setFont(font);
         g.fillRect(screenArea,m_session.getPageBackgroundColor());
@@ -136,11 +136,78 @@ void UIPromptMachineViewer::paintEvent(QPaintEvent *event)
                    option);
 
     }
-    else
+//    if (m_isOverlayActive)
+//    {
+//        QTextOption option;
+//        QRect header(0,0,this->width(),this->height()/10);
+//        option.setAlignment(Qt::AlignCenter);
+//        QFont font = UIUtils::getAutoFont(m_overlayText,this->width(),256);
+//        g.setFont(font);
+
+//        g.fillRect(header,m_session.getTextBackgroundColor());
+//        g.setPen(m_session.getPageBackgroundColor());
+//        g.drawText(header,m_overlayText,option);
+//    }
+//QMainWindow::paintEvent(event);
+}
+
+void UIPromptMachineViewer::setScrollSpeed(int value)
+{
+    switch(m_session.getInitialScrollSpeed())
     {
-//        g.drawImage(screenArea,
-//                    m_textOverlay);
+        case 0: m_scrollSpeed = 500;break;
+        case 1: m_scrollSpeed = 400;break;
+        case 2: m_scrollSpeed = 300;break;
+        case 3: m_scrollSpeed = 200;break;
+        case 4: m_scrollSpeed = 100;break;
+        case 5: m_scrollSpeed = 50;break;
+        case 6: m_scrollSpeed = 10;break;
+        default:break;
     }
+}
+
+QString UIPromptMachineViewer::getScrollSpeedText(int value) const
+{
+
+    if (value==0)
+    {
+        return "Slowest";
+    }
+    else if (value==1)
+    {
+        return "Slower";
+    }
+    else if (value==2)
+    {
+        return "Slow";
+    }
+    else if (value==3)
+    {
+        return "Normal";
+    }
+    if (value==4)
+    {
+        return "Fast";
+    }
+    else if (value==5)
+    {
+        return "Faster";
+    }
+    else if (value==6)
+    {
+        return "Fastest";
+    }
+    return "";
+}
+
+void UIPromptMachineViewer::showScrollSpeed()
+{
+    m_overlayText = "Speed: "+getScrollSpeedText(m_session.getInitialScrollSpeed());
+    m_overlayTime = 3000;
+    m_isOverlayActive = true;
+    connect(&m_overlayTimer,SIGNAL(timeout()),this,SLOT(onDisplayOverlay()));
+    m_overlayTimer.start(1000);
+
 }
 
 void UIPromptMachineViewer::onToggleFullScreen()
@@ -201,7 +268,7 @@ void UIPromptMachineViewer::onUpdateCountDown()
         m_countDownTimer.stop();
         m_isCountDownMode = false;
         m_browser->show();
-        m_scrollTimer.start(101-m_scrollSpeed);
+        m_scrollTimer.start(m_scrollSpeed);
     }
     update();
 }
@@ -218,6 +285,17 @@ void UIPromptMachineViewer::onUpdateTextScroll()
 
 void UIPromptMachineViewer::onStart()
 {
+
+}
+
+void UIPromptMachineViewer::onDisplayOverlay()
+{
+    m_overlayTime-=1000;
+    if (m_overlayTime <= 0)
+    {
+        m_overlayTimer.stop();
+        m_isOverlayActive=false;
+    }
 
 }
 

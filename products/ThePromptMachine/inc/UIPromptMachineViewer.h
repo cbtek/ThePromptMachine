@@ -68,6 +68,7 @@ private:
     QTextBrowser * m_browser;
     QTimer m_countDownTimer;
     QTimer m_scrollTimer;
+    QTimer m_overlayTimer;
     QImage m_countDownOverlay;    
     bool m_isCountDownMode;
     QImage m_textOverlay;
@@ -76,12 +77,20 @@ private:
     int m_scrollSpeed;
 
     bool m_isFullScreen;
+
+    int m_overlayTime;
+    QString m_overlayText;
+    bool m_isOverlayActive;
+    void setScrollSpeed(int value);
+    QString getScrollSpeedText(int value) const;
+    void showScrollSpeed();
 private slots:
      void onToggleFullScreen();
      void onInit();
      void onUpdateCountDown();
      void onUpdateTextScroll();
      void onStart();
+     void onDisplayOverlay();
 };
 
 }}}}//end namespace
